@@ -1,0 +1,74 @@
+import pygame
+from pygame.draw import *
+from random import randint
+pygame.init()
+
+FPS = 1
+screen = pygame.display.set_mode((800, 900))
+
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+GREEN = (0, 255, 0)
+MAGENTA = (255, 0, 255)
+CYAN = (0, 255, 255)
+BLACK = (0, 0, 0)
+GREY = (127,127,127)
+WHITE = (255,255,255)
+COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
+
+
+def new_ball():
+    A = []
+    A.append(randint(100,700))
+    A.append(randint(150,500))
+    A.append(randint(30,50))
+    color = COLORS[randint(0, 5)]
+    circle(screen, color, (A[0], A[1]), A[2])
+    return A
+    
+def examination(x,y,A):
+    square_r = (A[0]-x)*(A[0]-x) + (A[1]-y)*(A[1]-y)
+        
+    if (A[2] * A[2] >= square_r):
+        if (abs(x-A[0])<= A[2] and abs(y-A[1])<= A[2] ):
+            return 1
+        else:
+            return 0
+    else:
+        return 0
+def background(x,y):
+    
+    rect(screen, GREY , (0,100,800,900))
+    rect(screen, WHITE, (0,0,800,100))
+    
+def text(x,y,A,color,size):
+    pygame.font.init()
+    myfont = pygame.font.SysFont(' ', size)
+    textsurface = myfont.render(A ,False, color)
+    screen.blit(textsurface,(x,y))
+    
+pygame.display.update()
+clock = pygame.time.Clock()
+finished = False
+score = 0
+time_of_life_game = 0
+number_of_circles = 3
+
+while not finished:
+    clock.tick(FPS)
+    background(0,0)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            time_of_life_game += 1
+            for i in range(number_of_circles):
+                score += examination(event.pos[0], event.pos[1],A[i])
+    
+    A = [new_ball() for i in range(number_of_circles)]
+    text(350,50,'Score: ' + str(score),BLACK,30)
+    pygame.display.update()
+    screen.fill(BLACK)
+
+pygame.quit()
