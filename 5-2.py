@@ -375,7 +375,7 @@ score = 0
 time_of_life_game = 0
 flag = 4
 endless_game_mode = 0
-flag_unlock_endless_gamemode = 1
+flag_unlock_endless_gamemode = 0
 
 loading_bar = 100
 flag_loading_screen = 1
@@ -395,12 +395,14 @@ while not finished:
                 Level = 1
                 MAX_score_full = 0
                 Score_full = 0
-                number_of_enemies = 0
-                k = 0
+
                 coordinates_new_enemies = []
                 speed_new_enemies = []
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play) == 1):
+                    Level = 1
+                    number_of_enemies = 0
+                    k = 0
                     endless_game_mode = 0
                     flag = 3
                 
@@ -409,6 +411,9 @@ while not finished:
                     flag = 5
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_infinite_play) == 1):
+                    number_of_enemies = 0
+                    k = 0
+                    time_of_life_game = 0
                     if (flag_unlock_endless_gamemode == 1):
                         endless_game_mode = 1
                         flag = 3
@@ -419,6 +424,10 @@ while not finished:
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
                     flag = 4
                     score = 0
+                    Level = 1
+                    number_of_enemies = 0
+                    k = 0
+                    endless_game_mode = 0
                     
                 else:
                     fl = []
@@ -443,6 +452,10 @@ while not finished:
             elif (flag == 2):
 
                 score = 0
+                number_of_enemies = 0
+                k = 0
+                coordinates_new_enemies = []
+                speed_new_enemies = []
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
                     flag = 0
@@ -468,7 +481,7 @@ while not finished:
                 
                 Level = 1
 
-                flag = 1
+                flag = 4
 
             number_of_enemies_on_current_level = Number_of_enemies_on_levels[Level]
             difficult_of_enemies_on_current_level = Difficult[Level]
