@@ -191,6 +191,12 @@ def background(flag):
         after_lavel_background()
     elif (flag == -1):
         error_loading_screen()
+    elif (flag == 1):
+        screen_of_finish_infinite_game()
+    elif (flag == 6):
+        screen_of_finish_infinite_game()
+        screen_of_input_name_player()
+
     rect(screen, BLACK, (0, 0, 800, 900), 5)
 
 
@@ -296,6 +302,32 @@ def score_table(score):
     text(50, 25, 'Score: ' + str(score), BLACK, 64)
     line(screen, BLACK, (275, 0), (275, 100), 5)
 
+coordinates_button_save_score = [100, 650, 600, 50]
+
+def screen_of_input_name_player():
+    rect(screen, GREY, (70, 270, 660, 200))
+    rect(screen, BLACK, (70, 270, 660, 200), 5)
+
+    rect(screen, WHITE, (130, 330, 540, 80))
+    rect(screen, BLACK, (130, 330, 540, 80), 5)
+
+def screen_of_finish_infinite_game():
+    rect(screen, GREY, (0, 0, 800, 100))
+    rect(screen, WHITE, (100, 100, 600, 250))
+    rect(screen, BLACK, (100, 100, 600, 250), 5)
+
+    line(screen, BLACK, (100, 350), (700, 350), 5)
+    text(225, 200, 'Score:', BLACK, 64)
+    text(525, 200, str(p) , BLACK, 64)
+
+    rect(screen, GREEN, coordinates_button_save_score)
+    text(300, 650, 'Save score', BLACK, 64)
+    rect(screen, BLACK, coordinates_button_save_score, 5)
+
+    rect(screen, RED, coordinates_button_play_continue)
+    text(350, 750, 'Exit', BLACK, 64)
+    rect(screen, BLACK, coordinates_button_play_continue, 5)
+
 
 def button_esc():
     rect(screen, RED, (coordinates_button_esc[0], coordinates_button_esc[1],
@@ -344,6 +376,7 @@ def rules_spawn_endless_gamemode_in_progress_game():
     number_of_enemies_on_current_level[n] = 1
 
     return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
+
 def button(x, y, coordinates):
     if (x >= coordinates[0] and x <= coordinates[0] + coordinates[2] and y >= coordinates[1] and y <= coordinates[1] + coordinates[3]):
         return 1
@@ -459,11 +492,23 @@ while not finished:
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
                     flag = 0
+
+            elif (flag == 1 ):
+
+                if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 ):
+                    flag = 4
+                
+                if (button(event.pos[0], event.pos[1], coordinates_button_save_score) == 1 ):
+                    flag = 6
+
             elif (flag == -1 ):
 
-                error_loading_screen()
-
                 if (button(event.pos[0], event.pos[1], coordinates_button_infinite_play) == 1):
+                    flag = 4
+
+            elif (flag == 6):
+
+                if (event.type == pygame.K_RETURN):
                     flag = 4
 
             
@@ -497,7 +542,7 @@ while not finished:
         button_esc()
         time_of_life_game += 1
 
-        if (time_of_life_game == 1000):
+        if (time_of_life_game == 1500):
             p = score
             Score_full += score
             MAX_score_full += MAX_score
@@ -526,12 +571,12 @@ while not finished:
             score_table(score)
             button_esc()
             time_of_life_game += 1
-            print(number_of_enemies - k)
 
         else:
             number_of_enemies_on_current_level = []
             difficult_of_enemies_on_current_level = []
-            flag = 4
+
+            flag = 1
             p = score
             time_of_life_game = 0
             score = 0
@@ -539,3 +584,4 @@ while not finished:
     pygame.display.update()
 
 pygame.quit()
+
