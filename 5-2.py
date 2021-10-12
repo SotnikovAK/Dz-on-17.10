@@ -410,6 +410,7 @@ finished = False
 
 LIMIT_moves = [0, 100, 800, 900]
 LIMIT_moves_gift = [100, 200, 700, 800]
+boss_flag = 0
 
 score = 0
 time_of_life_game = 0
@@ -419,7 +420,6 @@ flag_unlock_endless_gamemode = 0
 
 loading_bar = 100
 flag_loading_screen = 1
-
 
 #crutches
 number_player = 0
@@ -449,6 +449,7 @@ while not finished:
                     number_of_enemies = 0
                     k = 0
                     endless_game_mode = 0
+                    time_of_life_game = 0
                     flag = 3
                 
 
@@ -467,7 +468,7 @@ while not finished:
             elif (flag == 0): #welcome to the battle zone
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
-                    if endless_game_mode == 0:
+                    if (endless_game_mode == 0):
                         flag = 4
                     elif (endless_game_mode == 1):
                         p = score
@@ -499,16 +500,20 @@ while not finished:
                     flag_loading_screen == 1
             elif (flag == 2): #screen finish campaign level
 
+                MAX_score_full += MAX_score
+                Score_full += score
+                
                 score = 0
                 number_of_enemies = 0
                 k = 0
                 coordinates_new_enemies = []
                 speed_new_enemies = []
 
-                if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
+                if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0 and boss_flag == 1):
+                    flag = 666
+                elif (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
                     flag = 0
-            elif (flag == 1 ): #screen of finish infinte game
-
+            elif (flag == 1 ): #screen of finish endless game
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 ):
                     flag = 4
                 
@@ -525,7 +530,6 @@ while not finished:
                                 PlAYER_NAME[j], PlAYER_NAME[j+1] = PlAYER_NAME[j+1], PlAYER_NAME[j]
 
                     flag = 5
-
             elif (flag == -1 ): #error endless gamemode screen
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_infinite_play) == 1):
@@ -540,13 +544,11 @@ while not finished:
         if (time_of_life_game == 0 ):
             k = 0
             if Level == 5:
-                    
-                flag_unlock_endless_gamemode = 1
                 
+                boss_flag = 1
+                flag_unlock_endless_gamemode = 1
                 Level = 1
-
                 flag = 4
-
             number_of_enemies_on_current_level = Number_of_enemies_on_levels[Level]
             difficult_of_enemies_on_current_level = Difficult[Level]
 
@@ -570,7 +572,7 @@ while not finished:
 
     elif (endless_game_mode == 1 and flag == 0):
 
-        if ((number_of_enemies - k) <= 60):
+        if ((number_of_enemies - k) <= 100):
             if (time_of_life_game == 0):
 
                 k = 0
@@ -603,4 +605,3 @@ while not finished:
     pygame.display.update()
 
 pygame.quit()
-
