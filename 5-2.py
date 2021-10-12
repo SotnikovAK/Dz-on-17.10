@@ -84,8 +84,13 @@ def live_icon(x,y,n):
 
 def coordinates_new_enemy(class_of_enemy):
     XY_R_color = []
-    XY_R_color.append(randint(200, 600))
-    XY_R_color.append(randint(250, 700))
+    if (boss_flag == 0):
+        XY_R_color.append(randint(200, 600))
+        XY_R_color.append(randint(250, 700))
+    else:
+        XY_R_color.append(randint(100, 700))
+        XY_R_color.append(randint(400, 500))
+
     XY_R_color.append(randint(10, 20))
     color = COLORS[randint(0, 5)]
     if class_of_enemy == 1:
@@ -115,20 +120,24 @@ def coordinates_new_enemy(class_of_enemy):
 def speeds_new_enemy(n,i):
 
     V = []
-    if i!= 1:
-        Vx = randint(-n, n) + randint(-n, n) / 10
-        Vy = randint(-n, n) + randint(-n, n) / 10
-        if (Vx == 0):
-            VX = n
-        if (Vy == 0):
-            Vy = n
-    else:
-        if (randint(0,1) == 1):
-            Vx = 0
-            Vy = randint(-n, n) + randint(-n, n) / 10
-        else:
+    if boss_flag == 0:
+        if i!= 1:
             Vx = randint(-n, n) + randint(-n, n) / 10
-            Vy = 0
+            Vy = randint(-n, n) + randint(-n, n) / 10
+            if (Vx == 0):
+                VX = n
+            if (Vy == 0):
+                Vy = n
+        else:
+            if (randint(0,1) == 1):
+                Vx = 0
+                Vy = randint(-n, n) + randint(-n, n) / 10
+            else:
+                Vx = randint(-n, n) + randint(-n, n) / 10
+                Vy = 0
+    else:
+        Vy = randint(-n, n) + randint(-n, n) / 10
+        Vx = randint(-n, n) / 10
     V.append(Vx)
     V.append(Vy)
     return V
@@ -156,7 +165,12 @@ def examination(x, y, A):
 
 def move_balls():
     for i in range(number_of_enemies):
-        random_coord = [randint(100, 700), randint(150, 800)]
+
+        if boss_flag == 0:
+            random_coord = [randint(100, 700), randint(150, 800)]
+        else:
+            random_coord = [randint(100, 700), randint(400, 500)]
+
         for j in range(2):
             if (coordinates_new_enemies[i][4] != 4):
                 if ((coordinates_new_enemies[i][j] + speed_new_enemies[i][j] >= LIMIT_moves[j+2] - coordinates_new_enemies[i][2]) or (LIMIT_moves[j] + coordinates_new_enemies[i][2] >= coordinates_new_enemies[i][j] + speed_new_enemies[i][j])):
@@ -560,6 +574,7 @@ while not finished:
                     else:
                         flag = -1
             elif (flag == 0): #welcome to the battle zone
+
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
                     flag = 4
                     p = score
@@ -583,6 +598,7 @@ while not finished:
                                   coordinates_new_enemies[i]) * coordinates_new_enemies[i][5])
 
                     k += exterminatus_of_balls()
+
 
                     
             elif (flag == 5): #best score screen
@@ -651,7 +667,7 @@ while not finished:
                 if Level == 5:
                     
                     life_player = 9
-                    life_boss = 30
+                    life_boss = 100
                     x = 0
 
                     boss_flag = 1
