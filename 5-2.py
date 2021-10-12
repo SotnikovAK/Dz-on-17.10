@@ -22,7 +22,7 @@ coordinates_button_play = [300, 400, 200, 100]
 coordinates_button_infinite_play = [300, 500, 200, 100]
 coordinates_button_esc = [500, 0, 300, 100, 600, 25]
 coordinates_button_play_continue = [100, 750, 600, 50]
-
+coordinates_button_save_score = [100, 650, 600, 50]
 
 coordinates_of_gift_1 = [(69, -72), (52, -93),
                          (-42, -103), (-63, -92), (-77, -85), (0, 0)]
@@ -34,12 +34,14 @@ Number_of_enemies_on_levels = [[0, 0, 0, 0], [15, 0, 0, 0], [
 Difficult = [[0, 0, 0, 0], [1, 0, 0, 0], [
     2, 3, 2, 6], [3, 3, 2, 6], [1, 2, 1, 6]]
 Score = [1, 2, -5, 10]
+BEST_SCORE = [0] * 13
+PlAYER_NAME = [0] * 13
 
+#ENEMIES
 def third_enemy(x, y, R, color):
     circle(screen, color, (x, y), R)
     line(screen, color, (x-1.5*R, y), (x+1.5*R, y), 5)
     line(screen, color, (x, y+1.5*R), (x, y-1.5*R), 5)
-
 
 def fourth_enemy(x, y, n, color, color2):
     X, Y = [], []
@@ -59,7 +61,6 @@ def fourth_enemy(x, y, n, color, color2):
     line(screen, color2, (X2[1], Y2[1]), (X[3], Y[3]), 1)
     line(screen, color2, (X2[2], Y2[2]), (X[4], Y[4]), 1)
     line(screen, color2, (X2[4], Y2[4]), (X[6], Y[6]), 1)
-
 
 def coordinates_new_enemy(class_of_enemy):
     XY_R_color = []
@@ -91,7 +92,6 @@ def coordinates_new_enemy(class_of_enemy):
     XY_R_color.append(BLACK)
     return XY_R_color
 
-
 def speeds_new_enemy(n,i):
 
     V = []
@@ -113,7 +113,6 @@ def speeds_new_enemy(n,i):
     V.append(Vy)
     return V
 
-
 def examination(x, y, A):
     if (A[4] == 1 or A[4] == 3):
         square_r = (A[0]-x)*(A[0]-x) + (A[1]-y)*(A[1]-y)
@@ -134,7 +133,6 @@ def examination(x, y, A):
             return 1
         else:
             return 0
-
 
 def move_balls():
     for i in range(number_of_enemies):
@@ -164,7 +162,6 @@ def move_balls():
             fourth_enemy(coordinates_new_enemies[i][0], coordinates_new_enemies[i][1],
                          coordinates_new_enemies[i][2]/5, coordinates_new_enemies[i][3], coordinates_new_enemies[i][6])
 
-
 def exterminatus_of_balls():
     n = 0
     for i in range(len(fl)):
@@ -176,7 +173,44 @@ def exterminatus_of_balls():
                 coordinates_new_enemies[i][2] = 0
     return n
 
+def generation(n,MAX_score,number_of_enemies):
+    for i in range(n):
+        if (number_of_enemies_on_current_level[i] != 0):
+            for j in range(number_of_enemies_on_current_level[i]):
+                coordinates_new_enemies.append(coordinates_new_enemy(i+1))
+                speed_new_enemies.append(speeds_new_enemy(difficult_of_enemies_on_current_level[i],i))
+        if i!=2 :
+            MAX_score += Score[i] * number_of_enemies_on_current_level[i]
+        number_of_enemies += number_of_enemies_on_current_level[i]
+    return MAX_score,number_of_enemies
 
+def rules_spawn_endless_gamemode_at_first_time():
+    number_of_enemies_on_current_level = [0] * 4
+    difficult_of_enemies_on_current_level = [0] * 4
+
+    for i in range(2):
+        number_of_enemies_on_current_level[i] = randint(25,30)
+        difficult_of_enemies_on_current_level[i] = randint(i+1,i+2)
+            
+    number_of_enemies_on_current_level[2] = 0
+    difficult_of_enemies_on_current_level[2] = 0
+
+    number_of_enemies_on_current_level[3] = 0
+    difficult_of_enemies_on_current_level[3] = 0
+
+    return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
+
+def rules_spawn_endless_gamemode_in_progress_game():
+    number_of_enemies_on_current_level = [0] * 4
+    difficult_of_enemies_on_current_level = [0] * 4
+    n = randint(0,1)
+    difficult_of_enemies_on_current_level[n] = randint(1,3)
+    number_of_enemies_on_current_level[n] = 1
+
+    return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
+
+
+#background
 def background(flag):
     rect(screen, GREY, (0, 100, 800, 900))
     if (flag == 0):
@@ -188,17 +222,18 @@ def background(flag):
     elif (flag == 3):
         loading_screen()
     elif (flag == 2):
-        after_lavel_background()
+        after_level_background()
     elif (flag == -1):
         error_loading_screen()
     elif (flag == 1):
         screen_of_finish_infinite_game()
+
     elif (flag == 6):
+        #don't work
         screen_of_finish_infinite_game()
         screen_of_input_name_player()
 
     rect(screen, BLACK, (0, 0, 800, 900), 5)
-
 
 def menu_of_game():
     rect(screen, GREY, (0, 0, 800, 100))
@@ -219,12 +254,28 @@ def menu_of_game():
     text(225, 760, 'Best players of Endless game' , BLACK, 40)
     rect(screen, BLACK, coordinates_button_play_continue, 5)
 
-
-def best_score_screen():
+def best_score_screen(): # Here i must do read from file , while i don't make it for simplicity + I must make input of name from klava 
+    
     rect(screen, GREY, (0, 0, 800, 100))
+    rect(screen, WHITE, (100,125,600,700))
+    rect(screen, BLACK, (100,125,600,700),5)
 
+    line(screen, BLACK, (200,125),(200,700+125),5)
+    line(screen, BLACK, (550,125),(550,125+700),5)
+
+    text(563,137,'SCORE:',BLACK, 40)
+    text(273,137,'Name player:',BLACK, 40)
+    text(113,137,'Place',BLACK,40 )
+
+    delta = 1
+    for i in range(175,125+700,50):
+        line(screen,BLACK, (100,i),(700,i),5)
+        text(113,137+delta * 50,(str(delta) + '.'),BLACK,40 )
+        if PlAYER_NAME[delta-1] != 0:
+            text(273,137 + delta * 50,'PLAYER-' + str(PlAYER_NAME[delta-1]) ,BLACK, 40)
+            text(563,137 + delta * 50, str(BEST_SCORE[delta-1]),BLACK, 40)
+        delta += 1
     button_esc()
-
 
 def loading_screen():
     rect(screen, GREY, (0, 0, 800, 100))
@@ -238,7 +289,6 @@ def loading_screen():
         rect(screen, BLACK, coordinates_button_play_continue, 5)
     rules()
     rect(screen, BLACK, coordinates_button_play_continue, 5)
-
 
 def rules():
     rect(screen, WHITE, (200, 100, 400, 600))
@@ -265,8 +315,7 @@ def rules():
         text(225, 450,' exceeds 100, you lose .', BLACK, 40)
     rect(screen, BLACK, (200, 100, 400, 600), 5)
 
-
-def after_lavel_background():
+def after_level_background():
     rect(screen, GREY, (0, 0, 800, 100))
     rect(screen, WHITE, (100, 100, 600, 500))
     rect(screen, BLACK, (100, 100, 600, 500), 5)
@@ -302,9 +351,7 @@ def score_table(score):
     text(50, 25, 'Score: ' + str(score), BLACK, 64)
     line(screen, BLACK, (275, 0), (275, 100), 5)
 
-coordinates_button_save_score = [100, 650, 600, 50]
-
-def screen_of_input_name_player():
+def screen_of_input_name_player():#don't work
     rect(screen, GREY, (70, 270, 660, 200))
     rect(screen, BLACK, (70, 270, 660, 200), 5)
 
@@ -328,7 +375,6 @@ def screen_of_finish_infinite_game():
     text(350, 750, 'Exit', BLACK, 64)
     rect(screen, BLACK, coordinates_button_play_continue, 5)
 
-
 def button_esc():
     rect(screen, RED, (coordinates_button_esc[0], coordinates_button_esc[1],
          coordinates_button_esc[2], coordinates_button_esc[3]), 0)
@@ -337,59 +383,20 @@ def button_esc():
     text(coordinates_button_esc[4],
          coordinates_button_esc[5], 'Quit', BLACK, 64)
 
-
 def battle_ground():
     rect(screen, WHITE, (0, 0, 800, 100))
     line(screen, BLACK, (0, 100), (800, 100), 5)
 
-def generation(n,MAX_score,number_of_enemies):
-    for i in range(n):
-        if (number_of_enemies_on_current_level[i] != 0):
-            for j in range(number_of_enemies_on_current_level[i]):
-                coordinates_new_enemies.append(coordinates_new_enemy(i+1))
-                speed_new_enemies.append(speeds_new_enemy(difficult_of_enemies_on_current_level[i],i))
-        if i!=2 :
-            MAX_score += Score[i] * number_of_enemies_on_current_level[i]
-        number_of_enemies += number_of_enemies_on_current_level[i]
-    return MAX_score,number_of_enemies
-def rules_spawn_endless_gamemode_at_first_time():
-    number_of_enemies_on_current_level = [0] * 4
-    difficult_of_enemies_on_current_level = [0] * 4
-
-    for i in range(2):
-        number_of_enemies_on_current_level[i] = randint(25,30)
-        difficult_of_enemies_on_current_level[i] = randint(i+1,i+2)
-            
-    number_of_enemies_on_current_level[2] = 0
-    difficult_of_enemies_on_current_level[2] = 0
-
-    number_of_enemies_on_current_level[3] = 0
-    difficult_of_enemies_on_current_level[3] = 0
-
-    return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
-
-def rules_spawn_endless_gamemode_in_progress_game():
-    number_of_enemies_on_current_level = [0] * 4
-    difficult_of_enemies_on_current_level = [0] * 4
-    n = randint(0,1)
-    difficult_of_enemies_on_current_level[n] = randint(1,3)
-    number_of_enemies_on_current_level[n] = 1
-
-    return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
-
+#service functions
 def button(x, y, coordinates):
     if (x >= coordinates[0] and x <= coordinates[0] + coordinates[2] and y >= coordinates[1] and y <= coordinates[1] + coordinates[3]):
         return 1
     return 0
-
-
 def text(x, y, A, color, size):
     pygame.font.init()
     myfont = pygame.font.SysFont(' ', size)
     textsurface = myfont.render(A, False, color)
     screen.blit(textsurface, (x, y))
-
-
 def assistant_for_polygon(x, y, X, Y, n, coordinates):
 
     for i in range(len(coordinates)):
@@ -408,10 +415,15 @@ score = 0
 time_of_life_game = 0
 flag = 4
 endless_game_mode = 0
-flag_unlock_endless_gamemode = 0
+flag_unlock_endless_gamemode = 1
 
 loading_bar = 100
 flag_loading_screen = 1
+
+
+#crutches
+number_player = 0
+
 
 while not finished:
     clock.tick(FPS)
@@ -423,7 +435,7 @@ while not finished:
             finished = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
 
-            if (flag == 4):
+            if (flag == 4): #menu game
 
                 Level = 1
                 MAX_score_full = 0
@@ -452,10 +464,15 @@ while not finished:
                         flag = 3
                     else:
                         flag = -1
-            elif (flag == 0):
+            elif (flag == 0): #welcome to the battle zone
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
-                    flag = 4
+                    if endless_game_mode == 0:
+                        flag = 4
+                    elif (endless_game_mode == 1):
+                        p = score
+                        flag = 1
+
                     score = 0
                     Level = 1
                     number_of_enemies = 0
@@ -470,19 +487,17 @@ while not finished:
                         score += (examination(event.pos[0], event.pos[1],
                                   coordinates_new_enemies[i]) * coordinates_new_enemies[i][5])
                     k += exterminatus_of_balls()
-
-            elif (flag == 5):
+            elif (flag == 5): #best score screen
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
                     flag = 4
-
-            elif (flag == 3):
+            elif (flag == 3): #screen of loading game
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
                     flag = 0
                     loading_bar = 100
                     flag_loading_screen == 1
-            elif (flag == 2):
+            elif (flag == 2): #screen finish campaign level
 
                 score = 0
                 number_of_enemies = 0
@@ -492,25 +507,29 @@ while not finished:
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 and flag_loading_screen == 0):
                     flag = 0
-
-            elif (flag == 1 ):
+            elif (flag == 1 ): #screen of finish infinte game
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 ):
                     flag = 4
                 
                 if (button(event.pos[0], event.pos[1], coordinates_button_save_score) == 1 ):
-                    flag = 6
 
-            elif (flag == -1 ):
+                    BEST_SCORE.append(p)
+                    number_player += 1
+                    PlAYER_NAME.append(number_player)
+
+                    for i in range(len(BEST_SCORE)):
+                        for j in range(len(BEST_SCORE) - 1 - i):
+                            if BEST_SCORE[j] <= BEST_SCORE[j+1]:
+                                BEST_SCORE[j], BEST_SCORE[j+1] = BEST_SCORE[j+1], BEST_SCORE[j]
+                                PlAYER_NAME[j], PlAYER_NAME[j+1] = PlAYER_NAME[j+1], PlAYER_NAME[j]
+
+                    flag = 5
+
+            elif (flag == -1 ): #error endless gamemode screen
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_infinite_play) == 1):
                     flag = 4
-
-            elif (flag == 6):
-
-                if (event.type == pygame.K_RETURN):
-                    flag = 4
-
             
         if (flag == 3):
             if (loading_bar >= 600):
@@ -551,7 +570,7 @@ while not finished:
 
     elif (endless_game_mode == 1 and flag == 0):
 
-        if ((number_of_enemies - k) <= 100):
+        if ((number_of_enemies - k) <= 60):
             if (time_of_life_game == 0):
 
                 k = 0
