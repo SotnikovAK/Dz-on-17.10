@@ -415,7 +415,7 @@ score = 0
 time_of_life_game = 0
 flag = 4
 endless_game_mode = 0
-flag_unlock_endless_gamemode = 1
+flag_unlock_endless_gamemode = 0
 
 loading_bar = 100
 flag_loading_screen = 1
