@@ -287,7 +287,7 @@ def menu_of_game():
     text(225, 760, 'Best players of Endless game' , BLACK, 40)
     rect(screen, BLACK, coordinates_button_play_continue, 5)
 
-def best_score_screen(): # Here i must do read from file , while i don't make it for simplicity + I must make input of name from klava 
+def best_score_screen():
     
     rect(screen, GREY, (0, 0, 800, 100))
     rect(screen, WHITE, (100,125,600,700))
