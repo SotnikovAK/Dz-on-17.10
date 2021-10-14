@@ -43,7 +43,7 @@ coordinates_of_boss_left_leg_2 = [(0,20),(27,50),(-19,90),(-40,63)]
 coordinates_of_boss_right_leg_2 = [(-120,20),(-82,62),(-107,92),(-146,47)]
 
 Number_of_enemies_on_levels = [[0, 0, 0, 0], [15, 0, 0, 0], [
-    12, 5, 1, randint(0, 1)], [20, 5, 5, 1], [20, 5, 15, 2]]
+    12, 5, 1, 0 ], [20, 5, 5, 0], [20, 5, 15, 0]]
 Difficult = [[0, 0, 0, 0], [1, 0, 0, 0], [
     2, 3, 2, 6], [3, 3, 2, 6], [1, 2, 1, 6]]
 Score = [1, 2, -5, 10]
@@ -56,7 +56,7 @@ def third_enemy(x, y, R, color):
     line(screen, color, (x-1.5*R, y), (x+1.5*R, y), 5)
     line(screen, color, (x, y+1.5*R), (x, y-1.5*R), 5)
 
-def fourth_enemy(x, y, n, color, color2):
+def fourth_enemy(x, y, n, color, color2): #disable
     X, Y = [], []
     assistant_for_polygon(x, y, X, Y, n, coordinates_of_gift_2)
     polygon(screen, color, [(X[0], Y[0]), (X[1], Y[1]), (X[2], Y[2]), (X[3], Y[3]), (
@@ -580,17 +580,16 @@ while not finished:
             elif (flag == 0): #welcome to the battle zone
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
-                    flag = 4
+                    if (endless_game_mode == 0 ):
+                        flag = 4
+                    else:
+                        flag = 1
                     p = score
                     
                     score = 0
                     Level = 1
                     number_of_enemies = 0
                     k = 0
-
-                    endless_game_mode = 0
-                    boss_flag = 0
-                    
                 else:
 
                     fl = []
