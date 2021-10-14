@@ -120,24 +120,20 @@ def coordinates_new_enemy(class_of_enemy):
 def speeds_new_enemy(n,i):
 
     V = []
-    if boss_flag == 0:
-        if i!= 1:
-            Vx = randint(-n, n) + randint(-n, n) / 10
-            Vy = randint(-n, n) + randint(-n, n) / 10
-            if (Vx == 0):
-                VX = n
-            if (Vy == 0):
-                Vy = n
-        else:
-            if (randint(0,1) == 1):
-                Vx = 0
-                Vy = randint(-n, n) + randint(-n, n) / 10
-            else:
-                Vx = randint(-n, n) + randint(-n, n) / 10
-                Vy = 0
-    else:
+    if i!= 1:
+        Vx = randint(-n, n) + randint(-n, n) / 10
         Vy = randint(-n, n) + randint(-n, n) / 10
-        Vx = randint(-n, n) / 10
+        if (Vx == 0):
+            VX = n
+        if (Vy == 0):
+            Vy = n
+    else:
+        if (randint(0,1) == 1):
+            Vx = 0
+            Vy = randint(-n, n) + randint(-n, n) / 10
+        else:
+            Vx = randint(-n, n) + randint(-n, n) / 10
+            Vy = 0
     V.append(Vx)
     V.append(Vy)
     return V
@@ -243,6 +239,14 @@ def rules_spawn_endless_gamemode_in_progress_game():
 
     return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
 
+def rules_boss_fight(): #disabled
+    number_of_enemies_on_current_level = [0] * 4
+    difficult_of_enemies_on_current_level = [0] * 4
+    n = 1
+    difficult_of_enemies_on_current_level[n] = randint(1,3)
+    number_of_enemies_on_current_level[n] = 2
+    
+    return number_of_enemies_on_current_level, difficult_of_enemies_on_current_level
 
 #background
 def background(flag):
@@ -411,7 +415,7 @@ def battle_ground():
         else:
             BOSS(400,100,L)
 
-def move_boss(x,y):
+def move_boss(x,y):#disabled
 
     X,Y = [],[]
 
@@ -439,14 +443,14 @@ def move_boss(x,y):
         assistant_for_polygon(x, y, X, Y, 1, coordinates_of_boss_right_leg_1)
         polygon(screen, BLACK, [(X[0], Y[0]), (X[1], Y[1]), (X[2], Y[2]), (X[3], Y[3])],0)
 
-def BOSS(x,y,L):
+def BOSS(x,y,L):#disabled
 
     rect(screen,BLACK,(x-150,y,300,60),0)
     polygon(screen,BLACK,[(x-150,y+26),(x-210,y+102),(x-176,y+137),(x-109,y+60)],0)
     polygon(screen,BLACK,[(x+150,y+26),(x+210,y+102),(x+176,y+137),(x+109,y+60)],0)
     HEAD(x,y,L)
 
-def HEAD(x,y,L):
+def HEAD(x,y,L):#disabled
     rect(screen, GREEN, (x-50,y+60,100,L),0)
     rect(screen, BLACK, (x-50,y+60,100,L),5)
     circle(screen, BLACK, (x-37,y+L-36+60),5)
@@ -470,7 +474,7 @@ def screen_of_finish_infinite_game():
     rect(screen, BLACK, coordinates_button_play_continue, 5)
 
 
-def health_player(life):
+def health_player(life):#disabled
 
     live_icon(75,25,3)
     text(65, 25, str(life_player), BLACK, 64)
@@ -513,8 +517,8 @@ finished = False
 LIMIT_moves = [0, 100, 800, 900]
 LIMIT_moves_gift = [100, 200, 700, 800]
 
-boss_flag = 0
-flag_head = 1
+boss_flag = 0 #disabled
+flag_head = 1 #disabled
 
 score = 0
 time_of_life_game = 0
@@ -544,8 +548,6 @@ while not finished:
                 flag_head = 1
 
                 Level = 1
-                MAX_score_full = 0
-                Score_full = 0
                 time_move_boss = 0
 
                 coordinates_new_enemies = []
@@ -563,6 +565,7 @@ while not finished:
 
                 elif (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1):
                     flag = 5
+                    
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_infinite_play) == 1):
                     number_of_enemies = 0
@@ -573,6 +576,7 @@ while not finished:
                         flag = 3
                     else:
                         flag = -1
+                
             elif (flag == 0): #welcome to the battle zone
 
                 if (button(event.pos[0], event.pos[1], coordinates_button_esc) == 1):
@@ -616,9 +620,6 @@ while not finished:
                     if (button(event.pos[0], event.pos[1], coordinates_button_play_continue) == 1 ):
                         flag = 0  
             elif (flag == 2): #screen finish campaign level
-
-                MAX_score_full += MAX_score
-                Score_full += score
                 
                 score = 0
                 number_of_enemies = 0
@@ -670,11 +671,10 @@ while not finished:
                     life_boss = 100
                     x = 0
 
-                    boss_flag = 1
+                    boss_flag = 0
                     flag_unlock_endless_gamemode = 1
                     Level = 1
-                    flag = 3
-                    boss_flag = 1
+                    flag = 4
 
                 number_of_enemies_on_current_level = Number_of_enemies_on_levels[Level]
                 difficult_of_enemies_on_current_level = Difficult[Level]
@@ -688,13 +688,12 @@ while not finished:
 
             time_of_life_game += 1
 
-            if (time_of_life_game == 100):
+            if (time_of_life_game == 1500):
                 p = score
-                Score_full += score
-                MAX_score_full += MAX_score
+
                 flag = 2
                 time_of_life_game = 0
-        else:
+        else: #disabled
             
             if (flag_head == 1):
                 L+=0.5
@@ -704,7 +703,10 @@ while not finished:
                 L-=0.5
                 if (L==10):
                     flag_head = 1
-            
+
+            number_of_enemies_on_current_level, difficult_of_enemies_on_current_level = rules_boss_fight()
+            F, l = generation(4,0,0)
+            number_of_enemies += 1
 
             button_esc()
 
