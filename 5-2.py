@@ -121,8 +121,8 @@ def speeds_new_enemy(n,i):
 
     V = []
     if i!= 1:
-        Vx = randint(-n, n) + randint(-n, n) / 10
-        Vy = randint(-n, n) + randint(-n, n) / 10
+        Vx = randint(-n, n) 
+        Vy = randint(-n, n) 
         if (Vx == 0):
             VX = n
         if (Vy == 0):
