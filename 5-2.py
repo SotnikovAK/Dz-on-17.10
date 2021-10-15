@@ -5,7 +5,7 @@ from pygame.draw import *
 from random import randint
 pygame.init()
 
-FPS = 100
+FPS = 200
 screen = pygame.display.set_mode((800, 900))
 
 RED = (255, 0, 0)
